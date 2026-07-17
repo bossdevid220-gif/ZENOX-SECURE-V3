@@ -9,26 +9,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(145deg, #1a0f0a 0%, #2d1a0e 100%);
-            color: #fdf6ed;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        .glass-card {
-            background: rgba(40, 25, 15, 0.75);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 160, 50, 0.25);
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-        }
-        .prediction-card {
-            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
-            color: white;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(211, 84, 0, 0.4);
-        }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(145deg, #1a0f0a 0%, #2d1a0e 100%); color: #fdf6ed; min-height: 100vh; overflow-x: hidden; }
+        .glass-card { background: rgba(40, 25, 15, 0.75); backdrop-filter: blur(10px); border: 1px solid rgba(255, 160, 50, 0.25); border-radius: 16px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); }
+        .prediction-card { background: linear-gradient(135deg, #e67e22 0%, #d35400 100%); color: white; border-radius: 16px; box-shadow: 0 8px 24px rgba(211, 84, 0, 0.4); }
         .win-card { background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); box-shadow: 0 4px 16px rgba(243, 156, 18, 0.3); }
         .loss-card { background: linear-gradient(135deg, #c0392b 0%, #a93226 100%); box-shadow: 0 4px 16px rgba(192, 57, 43, 0.3); }
         .pending-card { background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%); box-shadow: 0 4px 16px rgba(241, 196, 15, 0.3); }
@@ -51,8 +34,6 @@
         .btn-orange { background: #e67e22; transition: 0.2s; }
         .btn-orange:hover { background: #d35400; }
         .text-glow { text-shadow: 0 0 12px rgba(230, 126, 34, 0.5); }
-        
-        /* DevTools Blocker */
         .devtools-blocker{position:fixed;top:0;left:0;right:0;bottom:0;background:#000;color:#fff;display:none;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:20px;font-family:sans-serif}
         .devtools-blocker.show{display:flex}
         .devtools-blocker h2{font-size:24px;color:#ff6b00}
@@ -67,7 +48,6 @@
     <p style="font-size:12px;color:#444">ZENOX SECURE V3</p>
 </div>
 
-<!-- HEADER -->
 <header class="py-4 px-4 border-b border-orange/20">
     <div class="max-w-4xl mx-auto flex justify-between items-center">
         <div class="flex items-center space-x-3">
@@ -91,10 +71,7 @@
     </div>
 </header>
 
-<!-- MAIN -->
 <main class="max-w-4xl mx-auto px-4 pb-16 space-y-5 pt-4">
-
-    <!-- CURRENT PREDICTION -->
     <section class="fade-in">
         <div class="prediction-card p-5 shadow-2xl">
             <div class="flex justify-between items-start mb-3">
@@ -109,7 +86,6 @@
                     <i class="fas fa-robot mr-1"></i> AI
                 </div>
             </div>
-            
             <div class="grid grid-cols-1 gap-4">
                 <div class="bg-white/10 p-4 rounded-xl border border-white/10">
                     <div class="flex justify-between items-center mb-1">
@@ -119,7 +95,6 @@
                     <p id="currentResult" class="text-3xl font-extrabold text-center py-3 tracking-widest text-yellow-200">-</p>
                 </div>
             </div>
-            
             <div id="apiErrorMessage" class="api-error mt-3 p-3 rounded-xl text-center hidden backdrop-blur-sm">
                 <i class="fas fa-exclamation-triangle mr-2 text-orange-200"></i>
                 <span id="apiErrorText" class="text-sm font-medium">API ERROR</span>
@@ -127,7 +102,6 @@
         </div>
     </section>
 
-    <!-- HISTORY + STATS -->
     <section class="fade-in">
         <div class="glass-card p-5">
             <div class="flex justify-between items-center mb-4">
@@ -135,8 +109,6 @@
                     <i class="fas fa-clock-rotate-left"></i> HISTORY
                 </h2>
             </div>
-            
-            <!-- STATS ROW -->
             <div class="grid grid-cols-4 gap-3 mb-5">
                 <div class="bg-white/5 p-3 rounded-xl text-center border border-white/5">
                     <p class="text-xs text-orange-200/70 uppercase tracking-wider">WIN RATE</p>
@@ -155,8 +127,6 @@
                     <p id="currentStreak" class="text-xl font-bold text-orange-300">-</p>
                 </div>
             </div>
-            
-            <!-- HISTORY SCROLL -->
             <div id="historyContainer" class="space-y-2.5 pr-1">
                 <div class="text-center py-8 text-orange-200/40">
                     <i class="fas fa-history text-3xl mb-2"></i>
@@ -169,17 +139,15 @@
 
 <script>
     // ============================================================
-    // CONFIG
+    // CONFIG - IMPORTANT: આ URL સાચો છે
     // ============================================================
     const API_URL = 'https://zenox-secure-v3.onrender.com/api';
-    // const API_URL = 'http://localhost:10000/api'; // Local test
 
     // ============================================================
     // DEVTOOLS BLOCKER
     // ============================================================
     (function blockDevTools() {
         const blocker = document.getElementById('devtoolsBlocker');
-        let devtoolsOpen = false;
         let blockCount = 0;
         const MAX_BLOCKS = 3;
 
@@ -189,20 +157,15 @@
             const heightThreshold = window.outerHeight - window.innerHeight > threshold;
             
             if (widthThreshold || heightThreshold) {
-                devtoolsOpen = true;
                 blockCount++;
                 blocker.classList.add('show');
                 document.body.style.overflow = 'hidden';
-                
                 if (blockCount >= MAX_BLOCKS) {
                     window.location.href = 'about:blank';
                 }
             } else {
-                if (!devtoolsOpen) {
-                    blocker.classList.remove('show');
-                    document.body.style.overflow = '';
-                }
-                devtoolsOpen = false;
+                blocker.classList.remove('show');
+                document.body.style.overflow = '';
             }
         }
 
@@ -214,7 +177,6 @@
                 (e.ctrlKey && e.key === 'u') ||
                 (e.ctrlKey && e.shiftKey && e.key === 'C')) {
                 e.preventDefault();
-                e.stopPropagation();
                 blockCount++;
                 blocker.classList.add('show');
                 if (blockCount >= MAX_BLOCKS) {
@@ -226,7 +188,6 @@
 
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
-            e.stopPropagation();
             return false;
         }, true);
 
@@ -267,9 +228,6 @@
         }
     }
 
-    // ============================================================
-    // LOGOUT
-    // ============================================================
     document.getElementById('logoutBtn').addEventListener('click', function() {
         localStorage.removeItem('zenox_token');
         localStorage.removeItem('zenox_device_id');
@@ -303,23 +261,12 @@
         if (!last_results || last_results.length === 0) {
             return Math.random() < 0.5 ? "BIG" : "SMALL";
         }
-
         const last_five = last_results.slice(-5);
         const counter = Counter(last_five);
         const big_count = counter["BIG"] || 0;
         const small_count = counter["SMALL"] || 0;
-
-        let trend;
-        if (big_count > small_count) {
-            trend = "BIG";
-        } else if (small_count > big_count) {
-            trend = "SMALL";
-        } else {
-            trend = Math.random() < 0.5 ? "BIG" : "SMALL";
-        }
-
-        const follow = Math.random() <= 0.6;
-        return follow ? trend : (trend === "BIG" ? "SMALL" : "BIG");
+        let trend = big_count > small_count ? "BIG" : small_count > big_count ? "SMALL" : Math.random() < 0.5 ? "BIG" : "SMALL";
+        return Math.random() <= 0.6 ? trend : (trend === "BIG" ? "SMALL" : "BIG");
     }
 
     function getBigSmallFromNumber(number) {
@@ -342,10 +289,7 @@
             let hour = parseInt(hourPart ? hourPart.value : '0', 10);
             if (hour === 24) hour = 0;
             return { raw: hour };
-        } catch (error) {
-            const hour = new Date().getHours();
-            return { raw: hour };
-        }
+        } catch { return { raw: new Date().getHours() }; }
     }
 
     function predictNextResult(formattedHistory) {
@@ -353,13 +297,8 @@
         const lastResultsBS = formattedHistory
             .map(item => item.actual)
             .filter(bs => bs === "BIG" || bs === "SMALL");
-
         const prediction = ai_trend_logic(lastResultsBS);
-
-        return {
-            prediction: prediction,
-            logic: `TREND AI (LAST 5) → ${prediction} (IST:${time.raw})`
-        };
+        return { prediction: prediction, logic: `TREND AI (LAST 5) → ${prediction} (IST:${time.raw})` };
     }
 
     const API_URL_GAME = "https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json";
@@ -377,15 +316,12 @@
             if (!response.ok) throw new Error(`API ERROR: ${response.status}`);
             const data = await response.json();
             const list = data?.data?.list;
-
             if (!list || list.length === 0) return;
 
             const latestResultPeriod = list[0].issueNumber;
-
             apiErrorMessage.classList.add('hidden');
 
             if (lastProcessedPeriod !== latestResultPeriod) {
-                console.log(`NEW RESULT PERIOD ${latestResultPeriod}`);
                 lastProcessedPeriod = latestResultPeriod;
 
                 const pendingIndex = history.findIndex(h => h.status === 'PENDING' && h.period == latestResultPeriod);
@@ -406,7 +342,6 @@
                 }));
 
                 const newPrediction = predictNextResult(formattedHistory);
-
                 currentPeriodEl.textContent = nextPeriod.slice(-50);
                 currentResultEl.textContent = newPrediction.prediction;
 
@@ -420,12 +355,10 @@
                 });
 
                 if (history.length > 100) history = history.slice(0, 100);
-
                 renderHistory();
                 updateStats();
             }
         } catch (error) {
-            console.error("FETCH ERROR:", error);
             apiErrorText.textContent = `API ERROR: ${error.message}`;
             apiErrorMessage.classList.remove('hidden');
         }
@@ -437,18 +370,12 @@
         const total = wins + losses;
         const winRate = total > 0 ? Math.round((wins / total) * 100) : 0;
 
-        let streak = 0;
-        let streakType = '';
+        let streak = 0, streakType = '';
         for (let i = 0; i < history.length; i++) {
             if (history[i].status === 'WIN' || history[i].status === 'LOSS') {
-                if (streak === 0) {
-                    streakType = history[i].status;
-                    streak = 1;
-                } else if (history[i].status === streakType) {
-                    streak++;
-                } else {
-                    break;
-                }
+                if (streak === 0) { streakType = history[i].status; streak = 1; }
+                else if (history[i].status === streakType) streak++;
+                else break;
             }
         }
 
@@ -460,24 +387,14 @@
 
     function renderHistory() {
         if (history.length === 0) {
-            historyContainerEl.innerHTML = `
-                <div class="text-center py-8 text-orange-200/40">
-                    <i class="fas fa-history text-3xl mb-2"></i>
-                    <p class="text-sm font-medium">NO PREDICTIONS YET</p>
-                </div>
-            `;
+            historyContainerEl.innerHTML = `<div class="text-center py-8 text-orange-200/40"><i class="fas fa-history text-3xl mb-2"></i><p class="text-sm font-medium">NO PREDICTIONS YET</p></div>`;
             return;
         }
 
         historyContainerEl.innerHTML = '';
-
         history.forEach((item) => {
-            const statusClass = item.status === 'WIN' ? 'win-card' : 
-                              item.status === 'LOSS' ? 'loss-card' : 'pending-card';
-
-            const statusDotClass = item.status === 'WIN' ? 'win' : 
-                                 item.status === 'LOSS' ? 'loss' : 'pending';
-
+            const statusClass = item.status === 'WIN' ? 'win-card' : item.status === 'LOSS' ? 'loss-card' : 'pending-card';
+            const statusDotClass = item.status === 'WIN' ? 'win' : item.status === 'LOSS' ? 'loss' : 'pending';
             const historyItem = document.createElement('div');
             historyItem.className = `history-item glass-card p-4 rounded-xl ${statusClass} border border-white/5`;
             historyItem.innerHTML = `
@@ -496,14 +413,10 @@
                 </div>
                 ${item.logic ? `<p class="text-xs text-orange-200/50 mt-2 truncate">${item.logic}</p>` : ''}
             `;
-
             historyContainerEl.appendChild(historyItem);
         });
     }
 
-    // ============================================================
-    // INIT
-    // ============================================================
     document.addEventListener('DOMContentLoaded', async function() {
         const valid = await checkAuth();
         if (!valid) return;
