@@ -146,67 +146,16 @@
 
 <script>
     // ============================================================
-    // CONFIG - IMPORTANT: આ URL સાચો છે
+    // CONFIG
     // ============================================================
     const API_URL = 'https://zenox-secure-v3.onrender.com/api';
-
-    // ============================================================
-    // DEVTOOLS BLOCKER
-    // ============================================================
-    (function blockDevTools() {
-        const blocker = document.getElementById('devtoolsBlocker');
-        let blockCount = 0;
-        const MAX_BLOCKS = 3;
-
-        function detectDevTools() {
-            const threshold = 160;
-            const widthThreshold = window.outerWidth - window.innerWidth > threshold;
-            const heightThreshold = window.outerHeight - window.innerHeight > threshold;
-            
-            if (widthThreshold || heightThreshold) {
-                blockCount++;
-                blocker.classList.add('show');
-                document.body.style.overflow = 'hidden';
-                if (blockCount >= MAX_BLOCKS) {
-                    window.location.href = 'about:blank';
-                }
-            } else {
-                blocker.classList.remove('show');
-                document.body.style.overflow = '';
-            }
-        }
-
-        setInterval(detectDevTools, 1000);
-
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'F12' || 
-                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) ||
-                (e.ctrlKey && e.key === 'u') ||
-                (e.ctrlKey && e.shiftKey && e.key === 'C')) {
-                e.preventDefault();
-                blockCount++;
-                blocker.classList.add('show');
-                if (blockCount >= MAX_BLOCKS) {
-                    window.location.href = 'about:blank';
-                }
-                return false;
-            }
-        }, true);
-
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-            return false;
-        }, true);
-
-        console.log = function() { return; };
-        console.warn = console.log;
-        console.error = console.log;
-        console.info = console.log;
-    })();
 
     let adminToken = localStorage.getItem('zenox_admin_token');
     let newKey = '';
 
+    // ============================================================
+    // TOAST
+    // ============================================================
     function showToast(msg, isSuccess = true) {
         const el = document.getElementById('toast');
         document.getElementById('toastMsg').textContent = msg;
@@ -215,11 +164,20 @@
     }
     function closeToast() { document.getElementById('toast').classList.remove('show'); }
 
+    // ============================================================
+    // ADMIN LOGIN (addEventListener વડે)
+    // ============================================================
     async function loginAdmin() {
         const password = document.getElementById('adminPassword').value;
         const errorEl = document.getElementById('adminError');
-        if (!password) { errorEl.textContent = 'Please enter password.'; errorEl.style.display = 'block'; return; }
+        
+        if (!password) {
+            errorEl.textContent = 'Please enter password.';
+            errorEl.style.display = 'block';
+            return;
+        }
         errorEl.style.display = 'none';
+        
         try {
             const res = await fetch(`${API_URL}/admin/login`, {
                 method: 'POST',
@@ -227,14 +185,20 @@
                 body: JSON.stringify({ password })
             });
             const data = await res.json();
-            if (!res.ok) { errorEl.textContent = '❌ Invalid admin password.'; errorEl.style.display = 'block'; return; }
+            
+            if (!res.ok) {
+                errorEl.textContent = '❌ Invalid admin password.';
+                errorEl.style.display = 'block';
+                return;
+            }
             adminToken = data.token;
             localStorage.setItem('zenox_admin_token', adminToken);
             showToast('✅ Admin authenticated!');
             initAdmin();
-        } catch {
+        } catch (error) {
             errorEl.textContent = '❌ Network error. Make sure server is running.';
             errorEl.style.display = 'block';
+            console.error('Login error:', error);
         }
     }
 
@@ -248,6 +212,39 @@
         showToast('👋 Logged out');
     }
 
+    // ============================================================
+    // EVENT LISTENERS
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', function() {
+        // Login Button
+        const loginBtn = document.querySelector('#adminLoginSection .btn-primary');
+        if (loginBtn) {
+            loginBtn.addEventListener('click', loginAdmin);
+        }
+
+        // Enter Key on Password field
+        const adminPassword = document.getElementById('adminPassword');
+        if (adminPassword) {
+            adminPassword.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    loginAdmin();
+                }
+            });
+        }
+
+        // Logout Button
+        const logoutBtn = document.getElementById('adminLogoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', logoutAdmin);
+        }
+
+        // Initialize
+        initAdmin();
+    });
+
+    // ============================================================
+    // AUTH FETCH
+    // ============================================================
     async function authFetch(url, options = {}) {
         if (!adminToken) throw new Error('Not authenticated');
         const res = await fetch(url, {
@@ -262,6 +259,9 @@
         return res;
     }
 
+    // ============================================================
+    // GENERATE KEY
+    // ============================================================
     async function generateKey() {
         const maxUsage = parseInt(document.getElementById('maxUsage').value) || 1;
         const expiresDays = parseInt(document.getElementById('expiresDays').value) || 30;
@@ -286,6 +286,9 @@
         if (newKey) navigator.clipboard.writeText(newKey.key).then(() => showToast('📋 Key copied!'));
     }
 
+    // ============================================================
+    // REVOKE KEY
+    // ============================================================
     async function revokeKey(key) {
         if (!confirm(`Revoke key: ${key}?`)) return;
         try {
@@ -295,6 +298,9 @@
         } catch { showToast('❌ Error', false); }
     }
 
+    // ============================================================
+    // TOGGLE USER
+    // ============================================================
     async function toggleUser(id) {
         try {
             const res = await authFetch(`${API_URL}/admin/users/${id}/toggle`, { method: 'POST' });
@@ -303,6 +309,9 @@
         } catch { showToast('❌ Error', false); }
     }
 
+    // ============================================================
+    // DELETE USER
+    // ============================================================
     async function deleteUser(id) {
         if (!confirm('Delete this user?')) return;
         try {
@@ -312,6 +321,9 @@
         } catch { showToast('❌ Error', false); }
     }
 
+    // ============================================================
+    // LOAD KEYS
+    // ============================================================
     async function loadKeys() {
         try {
             const res = await authFetch(`${API_URL}/admin/keys`);
@@ -334,6 +346,9 @@
         } catch { document.getElementById('keysTableBody').innerHTML = '<tr><td colspan="6" style="text-align:center;color:#ef4444;">Error loading keys</td></tr>'; }
     }
 
+    // ============================================================
+    // LOAD USERS
+    // ============================================================
     async function loadUsers() {
         try {
             const res = await authFetch(`${API_URL}/admin/users`);
@@ -358,6 +373,9 @@
         } catch { document.getElementById('usersTableBody').innerHTML = '<tr><td colspan="5" style="text-align:center;color:#ef4444;">Error loading users</td></tr>'; }
     }
 
+    // ============================================================
+    // INIT ADMIN
+    // ============================================================
     async function initAdmin() {
         if (!adminToken) adminToken = localStorage.getItem('zenox_admin_token');
         if (adminToken) {
@@ -371,7 +389,8 @@
                     document.getElementById('adminPanel').style.display = 'block';
                     document.getElementById('adminStatus').textContent = '✅ Online';
                     document.getElementById('adminLogoutBtn').style.display = 'inline-block';
-                    loadKeys(); loadUsers();
+                    loadKeys();
+                    loadUsers();
                     return;
                 }
             } catch { localStorage.removeItem('zenox_admin_token'); adminToken = null; }
@@ -381,8 +400,6 @@
         document.getElementById('adminStatus').textContent = '🔒 Offline';
         document.getElementById('adminLogoutBtn').style.display = 'none';
     }
-
-    document.addEventListener('DOMContentLoaded', initAdmin);
 </script>
 
 </body>
