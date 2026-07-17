@@ -136,64 +136,9 @@
 
 <script>
     // ============================================================
-    // CONFIG - IMPORTANT: આ URL સાચો છે
+    // CONFIG
     // ============================================================
     const API_URL = 'https://zenox-secure-v3.onrender.com/api';
-
-    // ============================================================
-    // DEVTOOLS BLOCKER
-    // ============================================================
-    (function blockDevTools() {
-        const blocker = document.getElementById('devtoolsBlocker');
-        let blockCount = 0;
-        const MAX_BLOCKS = 3;
-
-        function detectDevTools() {
-            const threshold = 160;
-            const widthThreshold = window.outerWidth - window.innerWidth > threshold;
-            const heightThreshold = window.outerHeight - window.innerHeight > threshold;
-            
-            if (widthThreshold || heightThreshold) {
-                blockCount++;
-                blocker.classList.add('show');
-                document.body.style.overflow = 'hidden';
-                if (blockCount >= MAX_BLOCKS) {
-                    window.location.href = 'about:blank';
-                }
-            } else {
-                blocker.classList.remove('show');
-                document.body.style.overflow = '';
-            }
-        }
-
-        setInterval(detectDevTools, 1000);
-
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'F12' || 
-                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) ||
-                (e.ctrlKey && e.key === 'u') ||
-                (e.ctrlKey && e.shiftKey && e.key === 'C')) {
-                e.preventDefault();
-                blockCount++;
-                blocker.classList.add('show');
-                if (blockCount >= MAX_BLOCKS) {
-                    window.location.href = 'about:blank';
-                }
-                return false;
-            }
-        }, true);
-
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-            return false;
-        }, true);
-
-        console.log = function() { return; };
-        console.warn = console.log;
-        console.error = console.log;
-        console.info = console.log;
-        console.debug = console.log;
-    })();
 
     // ============================================================
     // DEVICE ID
@@ -216,27 +161,7 @@
     document.getElementById('userIdField').value = deviceId;
 
     // ============================================================
-    // SESSION CHECK
-    // ============================================================
-    async function checkExistingSession() {
-        const token = localStorage.getItem('zenox_token');
-        if (!token) return;
-
-        try {
-            const response = await fetch(`${API_URL}/auth/verify`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            const data = await response.json();
-            if (data.valid) {
-                window.location.href = '/dashboard';
-            }
-        } catch {
-            // Silent fail
-        }
-    }
-
-    // ============================================================
-    // HANDLE LOGIN
+    // HANDLE LOGIN (addEventListener વડે)
     // ============================================================
     async function handleLogin() {
         const key = document.getElementById('accessKey').value.trim();
@@ -273,10 +198,6 @@
                     'ACCOUNT_LOCKED': '🔒 Account locked. Try later.',
                     'ACCOUNT_DISABLED': '🚫 Account disabled.',
                     'INVALID_CREDENTIALS': '❌ Invalid credentials.',
-                    'NO_TOKEN': '⚠️ Authentication required.',
-                    'TOKEN_EXPIRED': '⏰ Session expired.',
-                    'INVALID_TOKEN': '❌ Invalid session.',
-                    'ADMIN_REQUIRED': '🔒 Admin access required.',
                     'SERVER_ERROR': '⚠️ Server error.'
                 };
                 errorEl.textContent = errors[data.code] || data.error || '❌ Login failed.';
@@ -304,12 +225,49 @@
         }
     }
 
-    document.getElementById('loginBtn').addEventListener('click', handleLogin);
-    document.getElementById('accessKey').addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') handleLogin();
+    // ============================================================
+    // EVENT LISTENERS (inline onclick ને બદલે)
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', function() {
+        // Login Button
+        const loginBtn = document.getElementById('loginBtn');
+        if (loginBtn) {
+            loginBtn.addEventListener('click', handleLogin);
+        }
+
+        // Enter Key on Access Key field
+        const accessKey = document.getElementById('accessKey');
+        if (accessKey) {
+            accessKey.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    handleLogin();
+                }
+            });
+        }
+
+        // Check existing session
+        checkExistingSession();
     });
 
-    document.addEventListener('DOMContentLoaded', checkExistingSession);
+    // ============================================================
+    // SESSION CHECK
+    // ============================================================
+    async function checkExistingSession() {
+        const token = localStorage.getItem('zenox_token');
+        if (!token) return;
+
+        try {
+            const response = await fetch(`${API_URL}/auth/verify`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await response.json();
+            if (data.valid) {
+                window.location.href = '/dashboard';
+            }
+        } catch {
+            // Silent fail
+        }
+    }
 </script>
 
 </body>
