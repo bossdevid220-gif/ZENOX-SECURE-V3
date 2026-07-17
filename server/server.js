@@ -36,12 +36,11 @@ function writeData(data) {
 }
 
 // ============ MIDDLEWARE ============
-// Helmet - સિક્યોર HTTP હેડર્સ
 app.use(helmet({
     contentSecurityPolicy: {
         directives: {
             defaultSrc: ["'self'"],
-            scriptSrc: ["'self'"],
+            scriptSrc: ["'self'", "'unsafe-inline'"],
             styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com"],
             fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
             imgSrc: ["'self'", "data:"],
@@ -58,12 +57,14 @@ app.use(helmet({
     },
     noSniff: true,
     referrerPolicy: { policy: 'same-origin' },
-    frameguard: { action: 'deny' }
+    frameguard: { action: 'deny' },
+    crossOriginEmbedderPolicy: true,
+    crossOriginOpenerPolicy: { policy: 'same-origin' },
+    crossOriginResourcePolicy: { policy: 'same-origin' }
 }));
 
-// CORS - ફક્ત તમારા ડોમેન
 app.use(cors({
-    origin: ['https://zenox-secure.onrender.com', 'http://localhost:3000'],
+    origin: ['https://zenox-secure-v3.onrender.com', 'http://localhost:3000'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
@@ -93,7 +94,6 @@ const limiter = rateLimit({
 });
 app.use('/api', limiter);
 
-// Auth Limiter (લોગિન માટે સ્ટ્રિક્ટ)
 const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 5,
@@ -157,11 +157,13 @@ app.post('/api/auth/login', [
         const { deviceId, key } = req.body;
         const data = readData();
 
-        // Check if user exists
         let user = data.users.find(u => u.deviceId === deviceId);
 
         if (user) {
-            // Check lock
+            if (!user.isActive) {
+                return res.status(403).json({ error: 'Account disabled', code: 'ACCOUNT_DISABLED' });
+            }
+
             if (user.lockUntil && user.lockUntil > Date.now()) {
                 const remaining = Math.ceil((user.lockUntil - Date.now()) / 60000);
                 return res.status(403).json({ 
@@ -170,7 +172,6 @@ app.post('/api/auth/login', [
                 });
             }
 
-            // Verify password
             const isValid = await bcrypt.compare(key, user.passwordHash);
             if (!isValid) {
                 user.loginAttempts = (user.loginAttempts || 0) + 1;
@@ -181,7 +182,6 @@ app.post('/api/auth/login', [
                 return res.status(401).json({ error: 'Invalid credentials', code: 'INVALID_CREDENTIALS' });
             }
 
-            // Reset attempts
             user.loginAttempts = 0;
             user.lockUntil = null;
             user.lastLogin = new Date().toISOString();
@@ -202,7 +202,6 @@ app.post('/api/auth/login', [
             });
         }
 
-        // New device - check access key
         const accessKey = data.accessKeys.find(k => k.key === key && k.isActive);
         if (!accessKey) {
             return res.status(401).json({ error: 'Invalid access key', code: 'INVALID_KEY' });
@@ -216,7 +215,6 @@ app.post('/api/auth/login', [
             return res.status(401).json({ error: 'Key usage limit reached', code: 'KEY_LIMIT_REACHED' });
         }
 
-        // Create new user
         const passwordHash = await bcrypt.hash(key, 12);
         const newUser = {
             id: uuidv4(),
@@ -386,5 +384,5 @@ app.get('/health', (req, res) => {
 // ============ START SERVER ============
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🛡️ ZENOX SECURE V3 Server running on port ${PORT}`);
-    console.log(`🔐 https://zenox-secure.onrender.com`);
+    console.log(`🔐 https://zenox-secure-v3.onrender.com`);
 });
