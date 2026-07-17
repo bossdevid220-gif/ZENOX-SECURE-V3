@@ -1,0 +1,21 @@
+{
+  "name": "zenox-secure-backend",
+  "version": "3.0.0",
+  "description": "ZENOX SECURE V3 - Unbreakable Security",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.0.0",
+    "express-rate-limit": "^6.7.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.0",
+    "dotenv": "^16.0.3",
+    "uuid": "^9.0.0",
+    "express-validator": "^7.0.1",
+    "xss": "^1.0.14"
+  }
+}
