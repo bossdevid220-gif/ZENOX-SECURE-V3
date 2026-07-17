@@ -1,0 +1,27 @@
+{
+  "users": [],
+  "accessKeys": [
+    {
+      "key": "ZENOX-V3-ADMIN-KEY-2026",
+      "deviceId": "ZENOX-V3-ADMIN-KEY-2026",
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "expiresAt": null,
+      "isActive": true,
+      "usageCount": 0,
+      "maxUsage": 1,
+      "assignedTo": null,
+      "role": "admin"
+    },
+    {
+      "key": "ZENOX-V3-USER-ABC123",
+      "deviceId": "ZENOX-V3-USER-ABC123",
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "expiresAt": null,
+      "isActive": true,
+      "usageCount": 0,
+      "maxUsage": 1,
+      "assignedTo": null,
+      "role": "user"
+    }
+  ]
+}
