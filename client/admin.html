@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>ZENOX SECURE V3 - Admin</title>
+    <meta http-equiv="X-Frame-Options" content="DENY"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0618;
+            font-family: 'Inter', sans-serif;
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(255,107,0,0.2);
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            color: #ff6b00;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .header h1 span { color: #fff; }
+        .header-actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+        .btn {
+            padding: 8px 20px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 0.5px;
+        }
+        .btn-primary { background: #ff6b00; color: #fff; }
+        .btn-primary:hover { background: #e05e00; transform: scale(1.02); }
+        .btn-danger { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.2); }
+        .btn-danger:hover { background: rgba(239,68,68,0.25); }
+        .btn-success { background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.2); }
+        .btn-success:hover { background: rgba(16,185,129,0.25); }
+        .btn-warning { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.2); }
+        .btn-warning:hover { background: rgba(245,158,11,0.25); }
+        .btn-sm { padding: 4px 12px; font-size: 10px; }
+        .btn-block { width: 100%; padding: 14px; font-size: 14px; }
+        
+        .admin-login {
+            max-width: 420px;
+            margin: 60px auto;
+            background: rgba(26,10,62,0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 32px;
+            border: 1px solid rgba(255,107,0,0.2);
+            box-shadow: 0 0 60px rgba(255,107,0,0.05);
+        }
+        .admin-login h2 { font-family: 'Orbitron', sans-serif; font-size: 1rem; color: #ff6b00; margin-bottom: 8px; }
+        .admin-login .sub { font-size: 12px; color: #7c6ba0; margin-bottom: 16px; }
+        .admin-login input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,107,0,0.2);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        .admin-login input:focus { outline: none; border-color: #ff6b00; }
+        .admin-login .error { color: #ef4444; font-size: 12px; margin-top: 10px; display: none; }
+        
+        .card {
+            background: rgba(26,10,62,0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid rgba(255,107,0,0.1);
+            margin-bottom: 16px;
+        }
+        .card h3 {
+            font-size: 13px;
+            color: #ff6b00;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th {
+            text-align: left;
+            padding: 10px 8px;
+            color: #7c6ba0;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid rgba(255,107,0,0.1);
+        }
+        td {
+            padding: 10px 8px;
+            border-bottom: 1px solid rgba(255,107,0,0.05);
+            color: #d4d0e0;
+            vertical-align: middle;
+        }
+        tr:hover td { background: rgba(255,107,0,0.03); }
+        .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+        .status-dot.active { background: #10b981; }
+        .status-dot.inactive { background: #ef4444; }
+        .key-box {
+            font-family: 'Orbitron', monospace;
+            font-size: 10px;
+            background: rgba(0,0,0,0.3);
+            padding: 4px 10px;
+            border-radius: 6px;
+            color: #ff6b00;
+            word-break: break-all;
+        }
+        .flex { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+        .generate-form { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+        .generate-form .group { display: flex; flex-direction: column; gap: 4px; }
+        .generate-form label { font-size: 10px; color: #7c6ba0; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .generate-form input {
+            padding: 8px 14px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,107,0,0.2);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 12px;
+            width: 80px;
+        }
+        .generate-form input:focus { outline: none; border-color: #ff6b00; }
+        .generate-form select {
+            padding: 8px 14px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,107,0,0.2);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 12px;
+            width: 100px;
+        }
+        .new-key-display {
+            margin-top: 12px;
+            font-family: 'Orbitron', monospace;
+            font-size: 13px;
+            color: #ff6b00;
+            background: rgba(255,107,0,0.06);
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,107,0,0.15);
+            display: none;
+            word-break: break-all;
+        }
+        .new-key-display.show { display: block; }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(26,10,62,0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,107,0,0.2);
+            border-radius: 12px;
+            padding: 14px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            display: none;
+            z-index: 999;
+            max-width: 90%;
+        }
+        .toast.show { display: block; animation: slideUp 0.3s ease; }
+        .toast.success { border-color: rgba(16,185,129,0.4); }
+        .toast.error { border-color: rgba(239,68,68,0.4); }
+        .toast .close { margin-left: 12px; cursor: pointer; color: #7c6ba0; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 600px) {
+            body { padding: 12px; }
+            .header h1 { font-size: 0.9rem; }
+            .card { padding: 14px; }
+            .generate-form { flex-direction: column; align-items: stretch; }
+            .generate-form .group { width: 100%; }
+            .generate-form input { width: 100%; }
+            td, th { font-size: 10px; padding: 6px 4px; }
+            .admin-login { padding: 20px; margin: 30px auto; }
+        }
+
+        /* DevTools Blocker */
+        .devtools-blocker{position:fixed;top:0;left:0;right:0;bottom:0;background:#000;color:#fff;display:none;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:20px;font-family:sans-serif}
+        .devtools-blocker.show{display:flex}
+        .devtools-blocker h2{font-size:24px;color:#ff6b00}
+        .devtools-blocker p{font-size:14px;color:#888}
+    </style>
+</head>
+<body>
+
+<div class="devtools-blocker" id="devtoolsBlocker">
+    <h2>🛡️ ACCESS DENIED</h2>
+    <p>Developer tools are blocked for security reasons.</p>
+    <p style="font-size:12px;color:#444">ZENOX SECURE V3</p>
+</div>
+
+<div class="container">
+    <div class="header">
+        <h1>⚙ ZENOX <span>SECURE</span> · ADMIN</h1>
+        <div class="header-actions">
+            <span id="adminStatus" style="font-size:11px;color:#7c6ba0;">🔒 Offline</span>
+            <button class="btn btn-danger btn-sm" id="adminLogoutBtn" onclick="logoutAdmin()" style="display:none;">Logout</button>
+        </div>
+    </div>
+
+    <div id="adminLoginSection" class="admin-login">
+        <h2>🔐 Admin Access</h2>
+        <p class="sub">Enter admin password to manage access keys and users</p>
+        <input type="password" id="adminPassword" placeholder="Enter admin password..." onkeydown="if(event.key==='Enter')loginAdmin()"/>
+        <button class="btn btn-primary btn-block" onclick="loginAdmin()">Authenticate</button>
+        <div class="error" id="adminError"></div>
+    </div>
+
+    <div id="adminPanel" style="display:none;">
+        <div class="card">
+            <h3><i class="fas fa-key"></i> Generate Access Key</h3>
+            <div class="generate-form">
+                <div class="group">
+                    <label>Max Usage</label>
+                    <input type="number" id="maxUsage" value="1" min="1" max="10" />
+                </div>
+                <div class="group">
+                    <label>Expires (days)</label>
+                    <input type="number" id="expiresDays" value="30" min="1" max="365" />
+                </div>
+                <div class="group">
+                    <label>Role</label>
+                    <select id="keyRole">
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="generateKey()"><i class="fas fa-plus"></i> Generate</button>
+            </div>
+            <div class="new-key-display" id="newKeyDisplay"></div>
+        </div>
+
+        <div class="card">
+            <h3><i class="fas fa-list"></i> Access Keys</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Key</th><th>Usage</th><th>Role</th><th>Status</th><th>Assigned</th><th>Action</th></tr></thead>
+                    <tbody id="keysTableBody"><tr><td colspan="6" style="text-align:center;color:#5b4a7a;">Loading...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3><i class="fas fa-users"></i> Registered Users</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Device ID</th><th>Role</th><th>Status</th><th>Last Login</th><th>Actions</th></tr></thead>
+                    <tbody id="usersTableBody"><tr><td colspan="5" style="text-align:center;color:#5b4a7a;">Loading...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"><span id="toastMsg"></span><span class="close" onclick="closeToast()">✕</span></div>
+
+<script>
+    // ============================================================
+    // DEVTOOLS BLOCKER
+    // ============================================================
+    (function blockDevTools() {
+        const blocker = document.getElementById('devtoolsBlocker');
+        let blockCount = 0;
+        const MAX_BLOCKS = 3;
+
+        function detectDevTools() {
+            const threshold = 160;
+            const widthThreshold = window.outerWidth - window.innerWidth > threshold;
+            const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+            
+            if (widthThreshold || heightThreshold) {
+                blockCount++;
+                blocker.classList.add('show');
+                document.body.style.overflow = 'hidden';
+                if (blockCount >= MAX_BLOCKS) {
+                    window.location.href = 'about:blank';
+                }
+            } else {
+                blocker.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        }
+
+        setInterval(detectDevTools, 1000);
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) ||
+                (e.ctrlKey && e.key === 'u') ||
+                (e.ctrlKey && e.shiftKey && e.key === 'C')) {
+                e.preventDefault();
+                blockCount++;
+                blocker.classList.add('show');
+                if (blockCount >= MAX_BLOCKS) {
+                    window.location.href = 'about:blank';
+                }
+                return false;
+            }
+        }, true);
+
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        }, true);
+
+        console.log = function() { return; };
+        console.warn = console.log;
+        console.error = console.log;
+        console.info = console.log;
+    })();
+
+    // ============================================================
+    // CONFIG
+    // ============================================================
+    const API_URL = 'https://zenox-secure.onrender.com/api';
+    // const API_URL = 'http://localhost:10000/api';
+    let adminToken = localStorage.getItem('zenox_admin_token');
+    let newKey = '';
+
+    // ============================================================
+    // TOAST
+    // ============================================================
+    function showToast(msg, isSuccess = true) {
+        const el = document.getElementById('toast');
+        document.getElementById('toastMsg').textContent = msg;
+        el.className = 'toast show ' + (isSuccess ? 'success' : 'error');
+        setTimeout(() => el.classList.remove('show'), 5000);
+    }
+    function closeToast() { document.getElementById('toast').classList.remove('show'); }
+
+    // ============================================================
+    // ADMIN LOGIN
+    // ============================================================
+    async function loginAdmin() {
+        const password = document.getElementById('adminPassword').value;
+        const errorEl = document.getElementById('adminError');
+        if (!password) { errorEl.textContent = 'Please enter password.'; errorEl.style.display = 'block'; return; }
+        errorEl.style.display = 'none';
+        try {
+            const res = await fetch(`${API_URL}/admin/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password })
+            });
+            const data = await res.json();
+            if (!res.ok) { errorEl.textContent = '❌ Invalid admin password.'; errorEl.style.display = 'block'; return; }
+            adminToken = data.token;
+            localStorage.setItem('zenox_admin_token', adminToken);
+            showToast('✅ Admin authenticated!');
+            initAdmin();
+        } catch {
+            errorEl.textContent = '❌ Network error. Make sure server is running.';
+            errorEl.style.display = 'block';
+        }
+    }
+
+    function logoutAdmin() {
+        localStorage.removeItem('zenox_admin_token');
+        adminToken = null;
+        document.getElementById('adminLoginSection').style.display = 'block';
+        document.getElementById('adminPanel').style.display = 'none';
+        document.getElementById('adminStatus').textContent = '🔒 Offline';
+        document.getElementById('adminLogoutBtn').style.display = 'none';
+        showToast('👋 Logged out');
+    }
+
+    async function authFetch(url, options = {}) {
+        if (!adminToken) throw new Error('Not authenticated');
+        const res = await fetch(url, {
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${adminToken}`,
+                ...options.headers
+            }
+        });
+        if (res.status === 401) { logoutAdmin(); throw new Error('Session expired'); }
+        return res;
+    }
+
+    // ============================================================
+    // GENERATE KEY
+    // ============================================================
+    async function generateKey() {
+        const maxUsage = parseInt(document.getElementById('maxUsage').value) || 1;
+        const expiresDays = parseInt(document.getElementById('expiresDays').value) || 30;
+        const role = document.getElementById('keyRole').value;
+        try {
+            const res = await authFetch(`${API_URL}/admin/keys`, {
+                method: 'POST',
+                body: JSON.stringify({ maxUsage, expiresInDays: expiresDays, role })
+            });
+            const data = await res.json();
+            if (!res.ok) { showToast('❌ Failed to generate key', false); return; }
+            newKey = data.key;
+            const display = document.getElementById('newKeyDisplay');
+            display.innerHTML = `🔑 ${newKey.key} <i class="fas fa-copy" style="cursor:pointer;margin-left:10px;" onclick="copyNewKey()"></i>`;
+            display.className = 'new-key-display show';
+            showToast(`✅ Key generated: ${newKey.key}`);
+            loadKeys();
+        } catch { showToast('❌ Error generating key', false); }
+    }
+
+    function copyNewKey() {
+        if (newKey) navigator.clipboard.writeText(newKey.key).then(() => showToast('📋 Key copied!'));
+    }
+
+    // ============================================================
+    // REVOKE KEY
+    // ============================================================
+    async function revokeKey(key) {
+        if (!confirm(`Revoke key: ${key}?`)) return;
+        try {
+            const res = await authFetch(`${API_URL}/admin/keys/${key}`, { method: 'DELETE' });
+            if (res.ok) { showToast(`✅ Key revoked: ${key}`); loadKeys(); }
+            else showToast('❌ Failed to revoke key', false);
+        } catch { showToast('❌ Error', false); }
+    }
+
+    // ============================================================
+    // TOGGLE USER
+    // ============================================================
+    async function toggleUser(id) {
+        try {
+            const res = await authFetch(`${API_URL}/admin/users/${id}/toggle`, { method: 'POST' });
+            if (res.ok) { showToast('✅ User status updated'); loadUsers(); }
+            else showToast('❌ Failed to update user', false);
+        } catch { showToast('❌ Error', false); }
+    }
+
+    // ============================================================
+    // DELETE USER
+    // ============================================================
+    async function deleteUser(id) {
+        if (!confirm('Delete this user?')) return;
+        try {
+            const res = await authFetch(`${API_URL}/admin/users/${id}`, { method: 'DELETE' });
+            if (res.ok) { showToast('✅ User deleted'); loadUsers(); }
+            else showToast('❌ Failed to delete user', false);
+        } catch { showToast('❌ Error', false); }
+    }
+
+    // ============================================================
+    // LOAD KEYS
+    // ============================================================
+    async function loadKeys() {
+        try {
+            const res = await authFetch(`${API_URL}/admin/keys`);
+            const data = await res.json();
+            const tbody = document.getElementById('keysTableBody');
+            if (!data.keys || data.keys.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#5b4a7a;">No keys found</td></tr>';
+                return;
+            }
+            tbody.innerHTML = data.keys.map(k => `
+                <tr>
+                    <td><span class="key-box">${k.key}</span></td>
+                    <td>${k.usageCount || 0}/${k.maxUsage || 1}</td>
+                    <td>${k.role || 'user'}</td>
+                    <td><span class="status-dot ${k.isActive ? 'active' : 'inactive'}"></span>${k.isActive ? 'Active' : 'Revoked'}</td>
+                    <td>${k.assignedTo || '—'}</td>
+                    <td>${k.isActive ? `<button class="btn btn-danger btn-sm" onclick="revokeKey('${k.key}')">Revoke</button>` : '—'}</td>
+                </tr>
+            `).join('');
+        } catch { document.getElementById('keysTableBody').innerHTML = '<tr><td colspan="6" style="text-align:center;color:#ef4444;">Error loading keys</td></tr>'; }
+    }
+
+    // ============================================================
+    // LOAD USERS
+    // ============================================================
+    async function loadUsers() {
+        try {
+            const res = await authFetch(`${API_URL}/admin/users`);
+            const data = await res.json();
+            const tbody = document.getElementById('usersTableBody');
+            if (!data.users || data.users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#5b4a7a;">No users</td></tr>';
+                return;
+            }
+            tbody.innerHTML = data.users.map(u => `
+                <tr>
+                    <td style="font-family:Orbitron,monospace;font-size:10px;word-break:break-all;">${u.deviceId}</td>
+                    <td>${u.role || 'user'}</td>
+                    <td><span class="status-dot ${u.isActive ? 'active' : 'inactive'}"></span>${u.isActive ? 'Active' : 'Disabled'}</td>
+                    <td style="font-size:10px;color:#7c6ba0;">${u.lastLogin ? new Date(u.lastLogin).toLocaleString() : '—'}</td>
+                    <td>
+                        <button class="btn ${u.isActive ? 'btn-warning' : 'btn-success'} btn-sm" onclick="toggleUser('${u.id}')">${u.isActive ? 'Disable' : 'Enable'}</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        } catch { document.getElementById('usersTableBody').innerHTML = '<tr><td colspan="5" style="text-align:center;color:#ef4444;">Error loading users</td></tr>'; }
+    }
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    async function initAdmin() {
+        if (!adminToken) adminToken = localStorage.getItem('zenox_admin_token');
+        if (adminToken) {
+            try {
+                const res = await fetch(`${API_URL}/auth/verify`, {
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+                const data = await res.json();
+                if (data.valid && data.role === 'admin') {
+                    document.getElementById('adminLoginSection').style.display = 'none';
+                    document.getElementById('adminPanel').style.display = 'block';
+                    document.getElementById('adminStatus').textContent = '✅ Online';
+                    document.getElementById('adminLogoutBtn').style.display = 'inline-block';
+                    loadKeys(); loadUsers();
+                    return;
+                }
+            } catch { localStorage.removeItem('zenox_admin_token'); adminToken = null; }
+        }
+        document.getElementById('adminLoginSection').style.display = 'block';
+        document.getElementById('adminPanel').style.display = 'none';
+        document.getElementById('adminStatus').textContent = '🔒 Offline';
+        document.getElementById('adminLogoutBtn').style.display = 'none';
+    }
+
+    document.addEventListener('DOMContentLoaded', initAdmin);
+</script>
+
+</body>
+</html>
