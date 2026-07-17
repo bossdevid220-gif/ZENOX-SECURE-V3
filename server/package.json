@@ -1,7 +1,7 @@
 {
-  "name": "zenox-secure-backend",
+  "name": "zenox-secure-v3",
   "version": "3.0.0",
-  "description": "ZENOX SECURE V3 - Unbreakable Security",
+  "description": "ZENOX SECURE V3 - Ultimate Security",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
