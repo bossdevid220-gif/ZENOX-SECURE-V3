@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+    <meta name="robots" content="noindex,nofollow,noarchive"/>
+    <meta name="referrer" content="no-referrer"/>
+    <meta http-equiv="X-Frame-Options" content="DENY"/>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://zenox-secure.onrender.com https://draw.ar-lottery01.com; frame-src 'none'; object-src 'none'; base-uri 'self'"/>
+    <title>ZENOX SECURE V3</title>
+    <style>
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{background:#ffffff;font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;color:#000000}
+        .page{width:100%;max-width:480px;min-height:100vh;display:flex;flex-direction:column;background:#ffffff;position:relative;overflow:hidden;border-left:1px solid #e5e7eb;border-right:1px solid #e5e7eb}
+        .hero-bg{position:absolute;top:0;left:0;right:0;height:380px;background:linear-gradient(160deg,#ffedd5 0%,#fffff0 60%,#ffffff 100%);z-index:0}
+        .content{position:relative;z-index:1;padding:0 20px 32px}
+        .top-bar{display:flex;align-items:center;justify-content:space-between;padding:24px 20px 0;position:relative;z-index:1}
+        .logo-row{display:flex;align-items:center;gap:12px}
+        .logo-text{display:flex;flex-direction:column}
+        .logo-name{font-weight:900;font-size:18px;color:#ff6b00;letter-spacing:1px;line-height:1.1}
+        .logo-sub{font-size:10px;color:#666666;font-weight:600;letter-spacing:1px;margin-top:2px}
+        .version-badge{background:#ffffff;border:1.5px solid #ff6b00;border-radius:20px;padding:6px 14px;font-size:11px;font-weight:800;color:#ff6b00;letter-spacing:1px}
+        .hero-row{display:flex;flex-direction:column;align-items:center;text-align:center;padding:40px 20px 20px;position:relative;z-index:1;gap:15px}
+        .hero-title{font-size:32px;font-weight:900;color:#000000;line-height:1.2;letter-spacing:1px}
+        .hero-title .highlight{color:#ff6b00;display:inline}
+        .hero-desc{font-size:12px;color:#555555;line-height:1.6;max-width:320px;letter-spacing:0.5px}
+        .login-form{margin:20px 20px 0;background:#ffffff;padding:24px;border-radius:16px;box-shadow:0 10px 30px rgba(255,107,0,0.1);position:relative;z-index:1;border:1.5px solid #ffedd5}
+        .input-group{margin-bottom:20px}
+        .input-label{display:block;font-size:11px;font-weight:800;color:#555555;letter-spacing:1.5px;margin-bottom:8px}
+        .input-field{width:100%;background:#ffffff;border:1.5px solid #e5e7eb;border-radius:10px;padding:14px;color:#000000;font-size:14px;font-weight:600;outline:none;transition:all 0.3s ease}
+        .input-field:focus{border-color:#ff6b00;box-shadow:0 0 10px rgba(255,107,0,0.15)}
+        .input-field:read-only{background:#f9fafb;color:#666666;cursor:not-allowed}
+        .error-msg{background:#fee2e2;border:1px solid #ef4444;border-radius:10px;padding:10px 14px;font-size:12px;font-weight:700;color:#dc2626;margin-bottom:14px;display:none}
+        .error-msg.show{display:block}
+        .stats-row{display:grid;grid-template-columns:repeat(4,1fr);background:#ffffff;border-radius:16px;margin:20px 20px 0;padding:16px 8px;box-shadow:0 10px 25px rgba(0,0,0,0.05);position:relative;z-index:1;border:1.5px solid #ffedd5}
+        .stat-item{display:flex;flex-direction:column;align-items:center;gap:6px}
+        .stat-icon{font-size:16px}
+        .stat-num{font-size:14px;font-weight:800;color:#000000;line-height:1;letter-spacing:0.5px}
+        .stat-lbl{font-size:9px;color:#666666;font-weight:700;letter-spacing:0.5px}
+        .actions-row{display:flex;align-items:center;gap:10px;margin:20px 20px 0;position:relative;z-index:1}
+        .get-started-btn{flex:1;background:#ff6b00;color:#ffffff;border:none;border-radius:14px;padding:16px;font-size:14px;font-weight:900;letter-spacing:2px;cursor:pointer;display:flex;align-items:center;text-decoration:none;justify-content:space-between;transition:all 0.3s}
+        .get-started-btn:hover{background:#e05e00}
+        .get-started-btn:disabled{opacity:0.6;cursor:not-allowed}
+        .get-arrow{width:32px;height:32px;background:rgba(255,255,255,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900}
+        .features-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 20px 0;position:relative;z-index:1}
+        .feature-card{background:#ffffff;border-radius:14px;padding:14px;box-shadow:0 4px 15px rgba(0,0,0,0.03);border:1.5px solid #ffedd5}
+        .feat-icon{width:36px;height:36px;border-radius:50%;background:#ffedd5;color:#ff6b00;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:10px}
+        .feat-title{font-size:11px;font-weight:800;color:#000000;letter-spacing:.5px;margin-bottom:4px}
+        .feat-desc{font-size:10px;color:#666666;line-height:1.5}
+        .footer-dots{margin:30px 20px 24px;text-align:center;position:relative;z-index:1}
+        .footer-brand{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px}
+        .footer-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,#ff6b00,transparent)}
+        .footer-brand-text{font-size:12px;font-weight:900;color:#ff6b00;letter-spacing:3px}
+        .footer-tags{font-size:9px;color:#888888;letter-spacing:2px;margin-bottom:16px}
+        .footer-bottom{display:flex;align-items:center;justify-content:center;gap:8px}
+        .footer-bottom-text{font-size:10px;color:#555555;font-weight:600;letter-spacing:0.5px}
+        .spinner{display:inline-block;width:20px;height:20px;border:2px solid rgba(255,255,255,0.2);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        
+        /* Console/DevTools Blocker */
+        .devtools-blocker{position:fixed;top:0;left:0;right:0;bottom:0;background:#000;color:#fff;display:none;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:20px;font-family:sans-serif}
+        .devtools-blocker.show{display:flex}
+        .devtools-blocker h2{font-size:24px;color:#ff6b00}
+        .devtools-blocker p{font-size:14px;color:#888}
+    </style>
+</head>
+<body>
+
+<!-- DevTools Blocker -->
+<div class="devtools-blocker" id="devtoolsBlocker">
+    <h2>🛡️ ACCESS DENIED</h2>
+    <p>Developer tools are blocked for security reasons.</p>
+    <p style="font-size:12px;color:#444">ZENOX SECURE V3</p>
+</div>
+
+<div class="page">
+    <div class="hero-bg"></div>
+    
+    <div class="top-bar">
+        <div class="logo-row">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16 3 L28 8 L28 18 C28 24 22 29 16 31 C10 29 4 24 4 18 L4 8 Z" fill="#ff6b00" opacity="0.1" stroke="#ff6b00" stroke-width="2"/>
+                <text x="16" y="21" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="14" fill="#ff6b00">Z</text>
+            </svg>
+            <div class="logo-text">
+                <span class="logo-name">ZENOX SECURE</span>
+                <span class="logo-sub">NEXT-GEN PREDICTION SYSTEM</span>
+            </div>
+        </div>
+        <span class="version-badge">VERSION V3</span>
+    </div>
+    
+    <div class="hero-row">
+        <div class="hero-title">ADVANCED CYBER<br/><span class="highlight">ZENOX ENGINE</span></div>
+        <div class="hero-desc">BUILT WITH INTELLIGENT QUANTUM LOGIC AND REAL-TIME CYBER ANALYSIS FOR HIGH-ACCURACY PREDICTIONS.</div>
+    </div>
+
+    <div class="login-form">
+        <div id="loginError" class="error-msg"></div>
+        
+        <div class="input-group">
+            <label class="input-label">AUTO-GENERATED USER ID</label>
+            <input type="text" id="userIdField" class="input-field" readonly />
+        </div>
+        <div class="input-group" style="margin-bottom: 5px;">
+            <label class="input-label">ENTER SECURE KEY</label>
+            <input type="password" id="accessKey" class="input-field" placeholder="E.G. ZENOX-V3-ABCDEF" required autocomplete="off" />
+        </div>
+    </div>
+
+    <div class="stats-row">
+        <div class="stat-item">
+            <div class="stat-icon">🎯</div>
+            <div class="stat-num">99.4%</div>
+            <div class="stat-lbl">ACCURACY</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-icon">⚡</div>
+            <div class="stat-num">0.1MS</div>
+            <div class="stat-lbl">SPEED</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-icon">👥</div>
+            <div class="stat-num">85K+</div>
+            <div class="stat-lbl">ACTIVE</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-icon">🛡️</div>
+            <div class="stat-num">SECURE</div>
+            <div class="stat-lbl">STATUS</div>
+        </div>
+    </div>
+
+    <div class="actions-row">
+        <button type="submit" id="loginBtn" class="get-started-btn">
+            <span>SECURE LOGIN</span>
+            <span class="get-arrow" id="loginArrow">→</span>
+            <div class="spinner" id="loginSpinner" style="display:none;"></div>
+        </button>
+    </div>
+
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feat-icon">🧠</div>
+            <div class="feat-title">AI V3 CORE</div>
+            <div class="feat-desc">ULTRA SMART ALGORITHMS FOR DEFINITIVE PREDICTIONS.</div>
+        </div>
+        <div class="feature-card">
+            <div class="feat-icon">📊</div>
+            <div class="feat-title">LIVE FEED</div>
+            <div class="feat-desc">REAL-TIME DATA PROCESSING AND INSTANT BLOCK ANALYSIS.</div>
+        </div>
+        <div class="feature-card">
+            <div class="feat-icon">🛡️</div>
+            <div class="feat-title">ANTI-BAN PRO</div>
+            <div class="feat-desc">ADVANCED ENCRYPTION SHIELD WITH 100% UP-TIME.</div>
+        </div>
+        <div class="feature-card">
+            <div class="feat-icon">⚡</div>
+            <div class="feat-title">TURBO MODE</div>
+            <div class="feat-desc">LIGHTNING FAST DATA GENERATION IN ONE TAP.</div>
+        </div>
+    </div>
+
+    <div class="footer-dots">
+        <div class="footer-brand">
+            <div class="footer-line"></div>
+            <span class="footer-brand-text">ZENOX SECURE V3</span>
+            <div class="footer-line"></div>
+        </div>
+        <div class="footer-tags">POWERFUL • RELIABLE • CYBERNETIC • ULTRA SECURE</div>
+        <div class="footer-bottom">
+            <span class="footer-bottom-text"><strong>ZENOX SERVER</strong> – POWERING THE FUTURE OF COLOR PREDICTION.</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    // CONFIG
+    // ============================================================
+    const API_URL = 'https://zenox-secure.onrender.com/api';
+    // const API_URL = 'http://localhost:10000/api'; // For local testing
+    
+    // ============================================================
+    // DEVTOOLS BLOCKER (Anti-Console/Inspect)
+    // ============================================================
+    (function blockDevTools() {
+        const blocker = document.getElementById('devtoolsBlocker');
+        let devtoolsOpen = false;
+        let blockCount = 0;
+        const MAX_BLOCKS = 3;
+
+        function detectDevTools() {
+            const threshold = 160;
+            const widthThreshold = window.outerWidth - window.innerWidth > threshold;
+            const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+            
+            if (widthThreshold || heightThreshold) {
+                devtoolsOpen = true;
+                blockCount++;
+                blocker.classList.add('show');
+                document.body.style.overflow = 'hidden';
+                
+                if (blockCount >= MAX_BLOCKS) {
+                    // ખૂબ વાર ખોલવાનો પ્રયાસ → પેજ રીડાયરેક્ટ
+                    window.location.href = 'about:blank';
+                }
+            } else {
+                if (!devtoolsOpen) {
+                    blocker.classList.remove('show');
+                    document.body.style.overflow = '';
+                }
+                devtoolsOpen = false;
+            }
+        }
+
+        // Detect every second
+        setInterval(detectDevTools, 1000);
+
+        // Block F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) ||
+                (e.ctrlKey && e.key === 'u') ||
+                (e.ctrlKey && e.shiftKey && e.key === 'C')) {
+                e.preventDefault();
+                e.stopPropagation();
+                blockCount++;
+                blocker.classList.add('show');
+                if (blockCount >= MAX_BLOCKS) {
+                    window.location.href = 'about:blank';
+                }
+                return false;
+            }
+        }, true);
+
+        // Block Right Click
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }, true);
+
+        // Block console.log
+        const oldConsoleLog = console.log;
+        console.log = function() {
+            // Redirect all console logs to void
+            return;
+        };
+        console.warn = console.log;
+        console.error = console.log;
+        console.info = console.log;
+        console.debug = console.log;
+
+        console.log('🔒 ZENOX SECURE V3 - Console Blocked');
+    })();
+
+    // ============================================================
+    // DEVICE ID
+    // ============================================================
+    function getDeviceId() {
+        let id = sessionStorage.getItem('zenox_device_id');
+        if (!id) {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let newId = 'ZENOX-V3-';
+            for (let i = 0; i < 6; i++) {
+                newId += chars[Math.floor(Math.random() * chars.length)];
+            }
+            id = newId;
+            sessionStorage.setItem('zenox_device_id', id);
+        }
+        return id;
+    }
+
+    const deviceId = getDeviceId();
+    document.getElementById('userIdField').value = deviceId;
+
+    // ============================================================
+    // SESSION CHECK (Auto-redirect if already logged in)
+    // ============================================================
+    async function checkExistingSession() {
+        const token = localStorage.getItem('zenox_token');
+        if (!token) return;
+
+        try {
+            const response = await fetch(`${API_URL}/auth/verify`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await response.json();
+            if (data.valid) {
+                window.location.href = '/dashboard';
+            }
+        } catch {
+            // Silent fail
+        }
+    }
+
+    // ============================================================
+    // HANDLE LOGIN
+    // ============================================================
+    async function handleLogin() {
+        const key = document.getElementById('accessKey').value.trim();
+        const errorEl = document.getElementById('loginError');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginArrow = document.getElementById('loginArrow');
+        const loginSpinner = document.getElementById('loginSpinner');
+
+        if (!key) {
+            errorEl.textContent = '⚠️ Please enter your secure key.';
+            errorEl.classList.add('show');
+            return;
+        }
+
+        errorEl.classList.remove('show');
+        loginBtn.disabled = true;
+        loginArrow.style.display = 'none';
+        loginSpinner.style.display = 'inline-block';
+
+        try {
+            const response = await fetch(`${API_URL}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ deviceId, key })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                const errors = {
+                    'INVALID_KEY': '❌ Invalid access key. Please check and try again.',
+                    'KEY_EXPIRED': '⏰ This access key has expired.',
+                    'KEY_LIMIT_REACHED': '⚠️ This key has reached its usage limit.',
+                    'ACCOUNT_LOCKED': '🔒 Account locked. Try again later.',
+                    'INVALID_CREDENTIALS': '❌ Invalid credentials.',
+                    'NO_TOKEN': '⚠️ Authentication required.',
+                    'TOKEN_EXPIRED': '⏰ Session expired. Please login again.',
+                    'INVALID_TOKEN': '❌ Invalid session token.',
+                    'ADMIN_REQUIRED': '🔒 Admin access required.',
+                    'SERVER_ERROR': '⚠️ Server error. Please try again.'
+                };
+                errorEl.textContent = errors[data.code] || data.error || '❌ Login failed.';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            // Save session
+            localStorage.setItem('zenox_token', data.token);
+            localStorage.setItem('zenox_device_id', data.deviceId);
+            localStorage.setItem('zenox_role', data.role);
+            localStorage.setItem('zenox_expires', data.expiresIn);
+
+            // Redirect based on role
+            if (data.role === 'admin') {
+                window.location.href = '/admin';
+            } else {
+                window.location.href = '/dashboard';
+            }
+
+        } catch (error) {
+            errorEl.textContent = '🌐 Network error. Please check your connection.';
+            errorEl.classList.add('show');
+        } finally {
+            loginBtn.disabled = false;
+            loginArrow.style.display = 'flex';
+            loginSpinner.style.display = 'none';
+        }
+    }
+
+    // ============================================================
+    // EVENTS
+    // ============================================================
+    document.getElementById('loginBtn').addEventListener('click', handleLogin);
+    document.getElementById('accessKey').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') handleLogin();
+    });
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', checkExistingSession);
+</script>
+
+</body>
+</html>
